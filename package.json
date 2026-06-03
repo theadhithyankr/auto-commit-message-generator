@@ -1,0 +1,85 @@
+{
+  "name": "ai-commit-gen",
+  "displayName": "AI Commit Gen",
+  "description": "Generate conventional commit messages using multiple AI providers (OpenAI, Claude, Gemini, Groq, z.ai)",
+  "version": "0.1.0",
+  "publisher": "your-publisher-name",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "activationEvents": ["onStartupFinished"],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "aiCommitGen.generate",
+        "title": "AI Commit Gen: Generate Message"
+      },
+      {
+        "command": "aiCommitGen.switchProvider",
+        "title": "AI Commit Gen: Switch Provider"
+      },
+      {
+        "command": "aiCommitGen.setApiKey",
+        "title": "AI Commit Gen: Set API Key"
+      }
+    ],
+    "configuration": {
+      "title": "AI Commit Gen",
+      "properties": {
+        "aiCommitGen.provider": {
+          "type": "string",
+          "enum": ["openai", "anthropic", "gemini", "groq", "zai"],
+          "default": "openai",
+          "description": "AI provider to use for generating commit messages"
+        },
+        "aiCommitGen.openai.model": {
+          "type": "string",
+          "default": "gpt-4o-mini",
+          "description": "OpenAI model to use"
+        },
+        "aiCommitGen.anthropic.model": {
+          "type": "string",
+          "default": "claude-sonnet-4-20250514",
+          "description": "Anthropic model to use"
+        },
+        "aiCommitGen.gemini.model": {
+          "type": "string",
+          "default": "gemini-2.0-flash",
+          "description": "Google Gemini model to use"
+        },
+        "aiCommitGen.groq.model": {
+          "type": "string",
+          "default": "llama-3.3-70b-versatile",
+          "description": "Groq model to use"
+        },
+        "aiCommitGen.zai.model": {
+          "type": "string",
+          "default": "glm-4-flash",
+          "description": "z.ai (Zhipu) model to use"
+        },
+        "aiCommitGen.maxDiffSize": {
+          "type": "number",
+          "default": 10000,
+          "description": "Max diff size in characters to send to the AI"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.4.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.30.0",
+    "@google/generative-ai": "^0.21.0",
+    "openai": "^4.70.0"
+  }
+}
