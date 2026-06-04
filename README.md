@@ -65,7 +65,7 @@ npm run package
 Install the generated VSIX:
 
 ```powershell
-code --install-extension ai-commit-gen-0.1.0.vsix
+code --install-extension spreadle-ai-commit-gen-0.1.0.vsix
 ```
 
 ## Publish

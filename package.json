@@ -1,5 +1,5 @@
 {
-  "name": "ai-commit-gen",
+  "name": "spreadle-ai-commit-gen",
   "displayName": "AI Commit Gen",
   "description": "Generate conventional commit messages using multiple AI providers (OpenAI, Claude, Gemini, Groq, z.ai)",
   "version": "0.1.0",
