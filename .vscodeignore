@@ -3,7 +3,10 @@
 src/**
 .gitignore
 tsconfig.json
+esbuild.mjs
+package-lock.json
 **/tsconfig.json
 **/*.map
 **/*.ts
 node_modules/**
+*.vsix

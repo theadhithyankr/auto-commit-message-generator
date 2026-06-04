@@ -48,6 +48,41 @@ export async function hasStagedChanges(): Promise<boolean> {
   }
 }
 
+export async function hasUnstagedChanges(): Promise<boolean> {
+  const gitRoot = await getGitRoot();
+  if (!gitRoot) {
+    return false;
+  }
+
+  try {
+    const { stdout } = await execAsync("git status --porcelain", {
+      cwd: gitRoot,
+    });
+    return stdout.trim().length > 0;
+  } catch {
+    return false;
+  }
+}
+
+export async function stageAllChanges(): Promise<void> {
+  const gitRoot = await getGitRoot();
+  if (!gitRoot) {
+    throw new Error("No workspace folder open");
+  }
+
+  try {
+    await execAsync("git add -A", {
+      cwd: gitRoot,
+      maxBuffer: 10 * 1024 * 1024,
+    });
+  } catch (err: any) {
+    if (err.code === "ENOENT") {
+      throw new Error("git is not installed or not in PATH");
+    }
+    throw new Error(`Failed to stage changes: ${err.message}`);
+  }
+}
+
 export function truncateDiff(diff: string, maxChars: number): string {
   if (diff.length <= maxChars) {
     return diff;

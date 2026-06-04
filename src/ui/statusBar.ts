@@ -19,7 +19,7 @@ export class CommitGenStatusBar {
   update(): void {
     const activeId = this.registry.getActiveId();
     const provider = PROVIDERS.find((p) => p.id === activeId);
-    this.statusItem.text = `$(sparkle) ${provider?.label || activeId}`;
+    this.statusItem.text = `$(git-commit) ${provider?.label || activeId}`;
   }
 
   dispose(): void {

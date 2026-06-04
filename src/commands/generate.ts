@@ -1,16 +1,83 @@
 import * as vscode from "vscode";
 import { ProviderRegistry } from "../providers/registry";
-import { getStagedDiff, hasStagedChanges, truncateDiff } from "../git/diff";
+import {
+  getStagedDiff,
+  hasStagedChanges,
+  hasUnstagedChanges,
+  stageAllChanges,
+  truncateDiff,
+} from "../git/diff";
+
+interface GitRepository {
+  inputBox: {
+    value: string;
+  };
+}
+
+interface GitApi {
+  repositories: GitRepository[];
+}
+
+interface GitExtension {
+  getAPI(version: 1): GitApi;
+}
+
+async function setCommitInputMessage(message: string): Promise<void> {
+  const gitExtension = vscode.extensions.getExtension<GitExtension>("vscode.git");
+  const gitApi = gitExtension?.exports.getAPI(1);
+  const repository = gitApi?.repositories[0];
+
+  if (repository) {
+    repository.inputBox.value = message;
+    return;
+  }
+
+  vscode.scm.inputBox.value = message;
+}
 
 export function registerGenerateCommand(
   context: vscode.ExtensionContext,
   registry: ProviderRegistry
 ): void {
+  let isGenerating = false;
+
+  context.subscriptions.push(
+    vscode.commands.registerCommand("aiCommitGen.generating", () => {})
+  );
+
   const disposable = vscode.commands.registerCommand("aiCommitGen.generate", async () => {
+    if (isGenerating) {
+      return;
+    }
+
+    isGenerating = true;
+    await vscode.commands.executeCommand("setContext", "aiCommitGen.generating", true);
+
     try {
-      if (!(await hasStagedChanges())) {
+      const config = vscode.workspace.getConfiguration();
+      const autoStage = config.get<boolean>("aiCommitGen.autoStage", true);
+      let stagedChanges = await hasStagedChanges();
+
+      if (!stagedChanges && autoStage && (await hasUnstagedChanges())) {
+        await vscode.window.withProgress(
+          {
+            location: vscode.ProgressLocation.Notification,
+            title: "AI Commit Gen",
+            cancellable: false,
+          },
+          async (progress) => {
+            progress.report({ message: "Staging changes..." });
+            await stageAllChanges();
+          }
+        );
+        stagedChanges = await hasStagedChanges();
+      }
+
+      if (!stagedChanges) {
         vscode.window.showWarningMessage(
-          "No staged changes found. Stage files first with `git add`."
+          autoStage
+            ? "No changes found to stage or generate from."
+            : "No staged changes found. Stage files first or enable AI Commit Gen auto staging."
         );
         return;
       }
@@ -27,9 +94,7 @@ export function registerGenerateCommand(
           let diff = await getStagedDiff();
           if (token.isCancellationRequested) return;
 
-          const maxDiffSize = vscode.workspace
-            .getConfiguration()
-            .get<number>("aiCommitGen.maxDiffSize", 10000);
+          const maxDiffSize = config.get<number>("aiCommitGen.maxDiffSize", 10000);
           diff = truncateDiff(diff, maxDiffSize);
 
           progress.report({
@@ -42,10 +107,7 @@ export function registerGenerateCommand(
           if (token.isCancellationRequested) return;
 
           vscode.commands.executeCommand("workbench.view.scm");
-          const scmInput = vscode.scm.inputBox;
-          if (scmInput) {
-            scmInput.value = message;
-          }
+          await setCommitInputMessage(message);
 
           vscode.window.showInformationMessage("Commit message generated!");
         }
@@ -60,6 +122,9 @@ export function registerGenerateCommand(
       } else {
         vscode.window.showErrorMessage(`AI Commit Gen error: ${err.message}`);
       }
+    } finally {
+      isGenerating = false;
+      await vscode.commands.executeCommand("setContext", "aiCommitGen.generating", false);
     }
   });
 
