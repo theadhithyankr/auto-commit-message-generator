@@ -1,6 +1,6 @@
-# AI Commit Gen
+# Spreadle AI Commit Writer
 
-AI Commit Gen writes Conventional Commit messages from your Git changes directly inside VS Code's Source Control view.
+Spreadle AI Commit Writer writes Conventional Commit messages from your Git changes directly inside VS Code's Source Control view.
 
 ## Features
 
@@ -11,16 +11,43 @@ AI Commit Gen writes Conventional Commit messages from your Git changes directly
 - Switch between OpenAI, Anthropic Claude, Google Gemini, Groq, and z.ai.
 - Store API keys securely with VS Code Secret Storage.
 
+![Spreadle AI Commit Writer generating a commit message](working_in_action.gif)
+
 ## Usage
 
 1. Open a Git repository in VS Code.
 2. Make a change in your project.
 3. Open Source Control.
-4. Click the AI Commit Gen button in the Source Control toolbar.
+4. Click the Spreadle AI Commit Writer button in the Source Control toolbar.
 5. If prompted, choose a provider and set its API key.
 6. Review the generated message, then commit.
 
-If files are already staged, AI Commit Gen generates from the staged diff only. If nothing is staged and `aiCommitGen.autoStage` is enabled, it stages all current changes first.
+If files are already staged, Spreadle AI Commit Writer generates from the staged diff only. If nothing is staged and `aiCommitGen.autoStage` is enabled, it stages all current changes first.
+
+## Set Your API Key
+
+The first time you generate a commit message, Spreadle AI Commit Writer asks which provider to use and prompts for that provider's API key. You can also set or replace a key at any time from the Command Palette.
+
+1. Open the Command Palette with `Ctrl+Shift+P` or `Cmd+Shift+P`.
+2. Run `AI Commit Gen: Set API Key`.
+3. Choose your provider.
+4. Paste the API key when prompted.
+
+![Setting an API key for the selected AI provider](api.gif)
+
+API keys are saved in VS Code Secret Storage. They are not written to your repository.
+
+## Change Provider or Model
+
+Use the Command Palette when you want to switch providers without editing settings manually.
+
+1. Open the Command Palette with `Ctrl+Shift+P` or `Cmd+Shift+P`.
+2. Run `AI Commit Gen: Switch Provider`.
+3. Choose OpenAI, Anthropic Claude, Google Gemini, Groq, or z.ai.
+
+![Switching the active AI provider](change_model.gif)
+
+To change the exact model used by a provider, open VS Code Settings and search for `AI Commit Gen`. Update the matching setting, such as `aiCommitGen.openai.model`, `aiCommitGen.anthropic.model`, or `aiCommitGen.gemini.model`.
 
 ## Commands
 
@@ -65,7 +92,7 @@ npm run package
 Install the generated VSIX:
 
 ```powershell
-code --install-extension spreadle-ai-commit-gen-0.1.0.vsix
+code --install-extension spreadle-ai-commit-gen-0.1.1.vsix
 ```
 
 ## Publish
