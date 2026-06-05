@@ -9,4 +9,5 @@ package-lock.json
 **/*.map
 **/*.ts
 node_modules/**
+media/icon.png
 *.vsix
