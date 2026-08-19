@@ -65,7 +65,8 @@ To change the exact model used by a provider, open VS Code Settings and search f
 | `aiCommitGen.openai.model` | `gpt-4o-mini` | OpenAI model. |
 | `aiCommitGen.anthropic.model` | `claude-sonnet-4-20250514` | Anthropic model. |
 | `aiCommitGen.gemini.model` | `gemini-2.0-flash` | Gemini model. |
-| `aiCommitGen.groq.model` | `llama-3.3-70b-versatile` | Groq model. |
+| `aiCommitGen.groq.model` | `openai/gpt-oss-120b` | Groq model. |
+| `aiCommitGen.groq.fallbackModel` | `qwen/qwen3.6-27b` | Fallback Groq model used when the primary model is unavailable. |
 | `aiCommitGen.zai.model` | `glm-4-flash` | z.ai model. |
 
 ## Privacy

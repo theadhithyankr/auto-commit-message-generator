@@ -2,7 +2,7 @@
   "name": "spreadle-ai-commit-gen",
   "displayName": "Spreadle AI Commit Writer",
   "description": "Generate conventional commit messages using multiple AI providers (OpenAI, Claude, Gemini, Groq, z.ai)",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "publisher": "spreadle",
   "license": "MIT",
   "icon": "media/icon-128.png",
@@ -109,8 +109,13 @@
         },
         "aiCommitGen.groq.model": {
           "type": "string",
-          "default": "llama-3.3-70b-versatile",
+          "default": "openai/gpt-oss-120b",
           "description": "Groq model to use"
+        },
+        "aiCommitGen.groq.fallbackModel": {
+          "type": "string",
+          "default": "qwen/qwen3.6-27b",
+          "description": "Fallback Groq model used when the primary model is unavailable"
         },
         "aiCommitGen.zai.model": {
           "type": "string",
